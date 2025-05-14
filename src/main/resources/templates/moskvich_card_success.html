@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/images/Emblem_of_the_Federal_Tax_Service.png" type="image/png">
+    <title>Все оформленные карты москвича | МФЦ Москвы</title>
+    <style>
+        /* Основные переменные в стиле МФЦ */
+        :root {
+            --primary-color: #2d7ab4; /* Основной синий цвет МФЦ */
+            --primary-hover: #1e5f8b;
+            --secondary-color: #f8f9fa;
+            --border-color: #d9e1e8;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --error-color: #f44336;
+            --text-color: #333;
+            --light-text: #666;
+            --shadow: 0 2px 8px rgba(45, 122, 180, 0.1);
+            --transition: all 0.3s ease;
+            --header-height: 70px;
+        }
+
+        /* Базовые стили */
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f8fa;
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Шапка в стиле МФЦ */
+        .header {
+            background-color: white;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
+        /* Основной контент */
+        .main-content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: calc(100vh - var(--header-height) - 60px);
+        }
+
+        /* Контейнер */
+        .success-container {
+            background: white;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            animation: fadeInUp 0.5s ease-out;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .success-container h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        /* Таблица */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            position: sticky;
+            top: var(--header-height);
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--secondary-color);
+        }
+
+        tr:hover {
+            background-color: #e9f2f9;
+        }
+
+        /* Статусы */
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .status-green {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .status-orange {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .status-red {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        /* Кнопки */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-back {
+            background-color: white;
+            color: var(--primary-color);
+            margin-top: 20px;
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-back:hover {
+            background-color: #e9f2f9;
+        }
+
+        .btn-edit {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-cancel {
+            background-color: white;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-cancel:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Форма редактирования */
+        .edit-form {
+            display: none;
+            background: white;
+            padding: 20px;
+            margin-top: 15px;
+            border-radius: 6px;
+            animation: fadeIn 0.3s ease-out;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .edit-form-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 250px;
+        }
+
+        .edit-form label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+            color: var(--light-text);
+        }
+
+        .edit-form select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: white;
+            transition: var(--transition);
+            font-size: 0.95em;
+        }
+
+        .edit-form select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(45, 122, 180, 0.2);
+            outline: none;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 15px;
+                height: 60px;
+            }
+
+            .logo {
+                font-size: 1rem;
+                gap: 10px;
+            }
+
+            .logo img {
+                height: 35px;
+            }
+
+            .nav-btn span:last-child {
+                display: none;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .success-container {
+                padding: 20px;
+            }
+
+            th, td {
+                padding: 12px 10px;
+                font-size: 0.9em;
+            }
+
+            .edit-form-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .form-group {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .edit-form {
+                padding: 15px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Шапка сайта -->
+<header class="header">
+    <a href="http://localhost:8082" class="logo">
+        <img src="/images/Emblem_of_the_Federal_Tax_Service.png" alt="Логотип ФНС">
+        <span>МФЦ Москвы</span>
+    </a>
+
+    <div class="nav-buttons">
+        <a href="/mfc/appointments" class="nav-btn">
+            <span>📋</span>
+            <span>Список записей</span>
+        </a>
+        <a href="/mfc/dashboard" class="nav-btn">
+            <span>🏠</span>
+            <span>Главная</span>
+        </a>
+    </div>
+</header>
+
+<!-- Основной контент -->
+<main class="main-content">
+    <div class="success-container">
+        <h2>Все оформленные карты москвича</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Номер заявки</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="card : ${cardRequests}">
+                <td th:text="${card.user != null ? card.user.username : 'Данные отсутствуют'}"></td>
+                <td th:text="${card.requestNumber}"></td>
+                <td>
+                    <span th:classappend="${card.status == 'Одобрено'} ? 'status status-green' :
+                                  (card.status == 'В обработке' ? 'status status-orange' : 'status status-red')"
+                          th:text="${card.status}">
+                    </span>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-edit"
+                            th:onclick="'toggleEditForm(\'edit-form-' + ${card.id} + '\')'">
+                        🖊️ Редактировать
+                    </button>
+
+                    <div th:id="'edit-form-' + ${card.id}" class="edit-form">
+                        <form th:action="@{/mfc/moskvich_card/update_status}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <input type="hidden" name="requestId" th:value="${card.id}"/>
+
+                            <div class="edit-form-container">
+                                <div class="form-group">
+                                    <label for="newStatus-[[${card.id}]]">Новый статус:</label>
+                                    <select id="newStatus-[[${card.id}]]" name="newStatus" required>
+                                        <option th:selected="${card.status == 'В обработке'}"
+                                                value="В обработке">В обработке</option>
+                                        <option th:selected="${card.status == 'Одобрено'}"
+                                                value="Одобрено">Одобрено</option>
+                                        <option th:selected="${card.status == 'Отклонено'}"
+                                                value="Отклонено">Отклонено</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn">✅ Обновить</button>
+                                    <button type="button" class="btn btn-cancel"
+                                            th:onclick="'toggleEditForm(\'edit-form-' + ${card.id} + '\')'">
+                                        ✖ Отмена
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <a href="http://localhost:8082/mfc/dashboard" class="btn btn-back">← Вернуться на главную</a>
+    </div>
+</main>
+
+<script>
+    function toggleEditForm(id) {
+        const form = document.getElementById(id);
+        const isHidden = form.style.display === 'none';
+
+        // Сначала скрываем все открытые формы
+        document.querySelectorAll('.edit-form').forEach(f => {
+            f.style.display = 'none';
+        });
+
+        // Затем показываем/скрываем нужную форму
+        form.style.display = isHidden ? 'block' : 'none';
+
+        // Плавная прокрутка к форме
+        if (isHidden) {
+            setTimeout(() => {
+                form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+        }
+    }
+</script>
+
+</body>
+</html>
