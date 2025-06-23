@@ -52,11 +52,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MoskvichCardRequest> moskvichCardRequests;
 
-    // Пустой конструктор (нужен для JPA)
     public User() {
     }
 
-    // Конструктор для создания пользователя
+    // Конструктор
     public User(String username,String fullName, String email, String password, Role role) {
         this.username = username;
         this.fullName = fullName;

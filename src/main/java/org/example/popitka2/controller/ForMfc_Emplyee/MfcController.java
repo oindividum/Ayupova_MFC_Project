@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime; // ✅ Для работы с датами
+import java.time.LocalDateTime; // Для работы с датами
 
-import org.example.popitka2.service.AppointmentService; // ✅ Для работы с записями на прием
-import org.example.popitka2.service.MoskvichCardService; // ✅ Для работы с заявками на карту москвича
-import org.example.popitka2.model.Appointment; // ✅ Модель записи на прием
+import org.example.popitka2.service.AppointmentService;
+import org.example.popitka2.service.MoskvichCardService;
+import org.example.popitka2.model.Appointment;
 
 import java.security.Principal;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -20,9 +21,6 @@ import org.example.popitka2.repository.UserRepository;
 import org.example.popitka2.model.User;
 import org.example.popitka2.model.Role;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-
-
 
 
 @Controller
@@ -125,7 +123,6 @@ public class MfcController {
     }
 
 
-
     @GetMapping("/appointments/book")
     public String showBookAppointmentPage() {
         System.out.println("✅ Открытие формы записи на прием!"); // Проверка в консоли
@@ -159,11 +156,13 @@ public class MfcController {
 
         return "redirect:/mfc/appointments"; // Перенаправляем обратно на список записей
     }
+
     @GetMapping
     public String showDashboard(Principal principal, Model model) {
         model.addAttribute("username", principal.getName()); // Отправляем имя пользователя
         return "mfc_dashboard"; // Загружаем панель МФЦ
     }
+
     @GetMapping("/reports")
     public String showReportsPage() {
         return "development";

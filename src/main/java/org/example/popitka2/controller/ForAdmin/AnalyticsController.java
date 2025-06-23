@@ -36,6 +36,6 @@ public class AnalyticsController {
         model.addAttribute("completedRequests", stats.getOrDefault("Завершено", 0)); // Завершённые заявки
         model.addAttribute("appointmentStatsJson", statsJson); // JSON для графика
 
-        return "admin_analytics"; // Загружаем страницу `admin_analytics.html`
+        return "admin_analytics";
     }
 }

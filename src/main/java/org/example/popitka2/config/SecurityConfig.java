@@ -24,11 +24,11 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
             http
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/", "/auth/**", "/css/**", "/js/**", "/images/**").permitAll() // ✅ Разрешаем доступ к статическим ресурсам
+                            .requestMatchers("/", "/auth/**", "/css/**", "/js/**", "/images/**").permitAll()
                             .requestMatchers("/mfc/**").hasRole("MFC_EMPLOYEE")
-                            // 🔹 Доступ для обычных пользователей
+                            // Доступ для обычных пользователей
                             .requestMatchers("/admin/**").hasRole("ADMIN")
-                            .requestMatchers("/admin/users", "/admin/developmend").hasRole("ADMIN") // ✅ Доступ только для админов
+                            .requestMatchers("/admin/users", "/admin/developmend").hasRole("ADMIN")
 
                             .requestMatchers("/admin/analytics").hasRole("ADMIN")
                             .requestMatchers( "/admin/dashboard/author").hasRole("ADMIN")
@@ -39,18 +39,18 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
                             .requestMatchers("/user/profile").hasRole("USER")
                             .requestMatchers("/user/**").hasRole("USER")
 
-                            .requestMatchers("/moskvich_card/**").hasAnyRole("MFC_EMPLOYEE", "USER") // или другие роли
-                            // 🔹 Доступ для сотрудников МФЦ
+                            .requestMatchers("/moskvich_card/**").hasAnyRole("MFC_EMPLOYEE", "USER")
+                            // Доступ для сотрудников МФЦ
                             .requestMatchers("/mfc/moskvich_card/update_status").hasRole("MFC_EMPLOYEE")
 
                             .requestMatchers("/mfc/moskvich_card").hasRole("MFC_EMPLOYEE")
-                            .requestMatchers(HttpMethod.GET, "/mfc/moskvich_card/edit/**").hasRole("MFC_EMPLOYEE") // ✅ Доступ к редактированию
-                            .requestMatchers(HttpMethod.POST, "/mfc/moskvich_card/update_status").hasRole("MFC_EMPLOYEE") // ✅ Разрешаем POST-запросы
-                            .requestMatchers(HttpMethod.PUT, "/mfc/moskvich_card/update_status").hasRole("MFC_EMPLOYEE") // ✅ Разрешаем PUT-запросы
-                            .requestMatchers(HttpMethod.PATCH, "/mfc/moskvich_card/update_status").hasRole("MFC_EMPLOYEE") // ✅ Разрешаем PATCH-запросы
-                            .requestMatchers("/mfc/moskvich_card/update_status").hasRole("MFC_EMPLOYEE") // ✅ Разрешаем маршрут
+                            .requestMatchers(HttpMethod.GET, "/mfc/moskvich_card/edit/**").hasRole("MFC_EMPLOYEE")
+                            .requestMatchers(HttpMethod.POST, "/mfc/moskvich_card/update_status").hasRole("MFC_EMPLOYEE")
+                            .requestMatchers(HttpMethod.PUT, "/mfc/moskvich_card/update_status").hasRole("MFC_EMPLOYEE")
+                            .requestMatchers(HttpMethod.PATCH, "/mfc/moskvich_card/update_status").hasRole("MFC_EMPLOYEE")
+                            .requestMatchers("/mfc/moskvich_card/update_status").hasRole("MFC_EMPLOYEE")
 
-                            .requestMatchers("/admin/**").hasRole("ADMIN") // 🔥 Теперь доступ ко всем страницам `/admin/...`
+                            .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .requestMatchers("/director/**").hasRole("DIRECTOR")
 
@@ -73,12 +73,12 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
                 .formLogin(login -> login
                         .loginPage("/auth/login")
-                        .successHandler(authenticationSuccessHandler()) // ✅ Кастомный обработчик входа
+                        .successHandler(authenticationSuccessHandler())
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout") // 🔥 Теперь соответствует Thymeleaf
-                        .logoutSuccessUrl("/") // ✅ После выхода перенаправляем на главную страницу
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
                         .permitAll()
 
                 );
