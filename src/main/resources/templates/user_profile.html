@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+    <link rel="icon" href="/images/Emblem_of_the_Federal_Tax_Service.png" type="image/png">
+    <style>
+        /* Стили шапки */
+        .header {
+            background-color: #7d0000;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo img {
+            height: 30px;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .user-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .user-info {
+                width: 100%;
+                text-align: center;
+                align-items: center;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Оригинальные стили страницы */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+
+        .nearest-appointment {
+            background-color: #e6f4ea;
+            border-left: 5px solid #4CAF50;
+            margin: 20px auto;
+            padding: 15px 20px;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .appointment-container {
+            background: white;
+            margin: 20px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .appointment-container h2 {
+            margin-top: 0;
+            font-size: 22px;
+            color: #7d0000;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #f1f1f1;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .status-green {
+            color: #388e3c;
+            font-weight: bold;
+        }
+
+        .status-orange {
+            color: #f57c00;
+            font-weight: bold;
+        }
+
+        .status-red {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .btn-logout {
+            display: block;
+            margin: 30px auto;
+            width: fit-content;
+            padding: 12px 24px;
+            background-color: #7d0000;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background-color: #5c0000;
+        }
+
+        @media (max-width: 600px) {
+            .appointment-container, .nearest-appointment {
+                width: 95%;
+            }
+
+            th, td {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <a href="http://localhost:8082" class="logo">
+        <img src="/images/Emblem_of_the_Federal_Tax_Service.png" alt="Логотип ФНС">
+        <span>МФЦ Москвы</span>
+    </a>
+
+    <div class="user-info">
+        <div class="user-info-item">
+            <span>👤</span>
+            <span th:text="${username}">Имя пользователя</span>
+        </div>
+        <div class="user-info-item" th:if="${requestNumber}">
+            <span>💳</span>
+            <span>Заявка:</span>
+            <span th:text="${requestNumber}">MC-123456</span>
+        </div>
+        <div class="user-info-item" th:unless="${requestNumber}">
+            <span>❌</span>
+            <span>Нет активных заявок</span>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <a href="http://localhost:8082/user/dashboard" class="nav-btn">
+            <span>🏠</span>
+            <span>Главная</span>
+        </a>
+        <a href="http://localhost:8082/user/profile" class="nav-btn">
+            <span>👤</span>
+            <span>Профиль</span>
+        </a>
+        <a href="http://localhost:8082/logout" class="nav-btn">
+            <span>🚪</span>
+            <span>Выйти</span>
+        </a>
+    </div>
+</header>
+<section class="profile-container">
+    <h2>👤 Личная информация</h2>
+    <p><strong>Имя:</strong> <span th:text="${user.username}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+    <p><strong>Телефон:</strong> <span th:text="${user.phoneNumber}"></span></p>
+    <p><strong>Дата рождения:</strong> <span th:text="${#temporals.format(user.birthDate, 'dd MMMM yyyy')}"></span></p>
+
+    <a href="/user/edit_profile" class="btn-edit">✏️ Редактировать профиль</a>
+</section>
+
+<style>
+    .profile-container {
+        background: white;
+        padding: 20px;
+        margin: 20px auto;
+        width: 90%;
+        max-width: 800px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .btn-edit {
+        display: block;
+        width: fit-content;
+        margin: 20px auto;
+        padding: 12px 24px;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-edit:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+
+<!-- 🔹 Таблица записей (оригинальные стили) -->
+<section class="appointment-container" th:if="${appointments != null and appointments.size() > 0}">
+    <h2>📅 Предстоящие записи к врачу</h2>
+    <p class="nearest-appointment" th:text="${nearestAppointment}" th:if="${nearestAppointment != ''}"></p> <!-- Выводим, только если есть данные -->
+
+    <table>
+        <tr>
+            <th>№</th>
+            <th>Специальность врача</th>
+            <th>Дата и время</th>
+            <th>Статус</th>
+            <th>Комментарий</th>
+        </tr>
+        <tr th:each="appointment, iterStat : ${appointments}">
+            <td th:text="${iterStat.index + 1}"></td>
+            <td th:text="${appointment.doctor}"></td>
+            <td th:text="${#temporals.format(appointment.date, 'dd MMMM yyyy HH:mm')}"></td>
+            <td>
+                <span th:if="${appointment.status == '✅ Записан'}" class="status-green">✅ Записан</span>
+                <span th:if="${appointment.status == '❗ Ожидание подтверждения'}" class="status-orange">❗ Ожидание подтверждения</span>
+                <span th:if="${appointment.status == '❌ Отменено'}" class="status-red">❌ Отменено</span>
+            </td>
+            <td>
+                <span th:if="${appointment.reason}" th:text="${appointment.reason}"></span>
+                <span th:unless="${appointment.reason}">Без комментариев</span>
+            </td>
+        </tr>
+    </table>
+</section>
+
+
+<section class="appointment-container">
+    <h2>📜 История записей</h2>
+    <table>
+        <tr>
+            <th>№</th>
+            <th>Специальность врача</th>
+            <th>Дата и время</th>
+            <th>Комментарий</th>
+        </tr>
+        <tr th:each="appointment, iterStat : ${pastAppointments}">
+            <td th:text="${iterStat.index + 1}"></td>
+            <td th:text="${appointment.doctor}"></td>
+            <td th:text="${#temporals.format(appointment.date, 'dd MMMM yyyy HH:mm')}"></td>
+            <td>
+                <span th:if="${appointment.reason}" th:text="${appointment.reason}"></span>
+                <span th:unless="${appointment.reason}">Без комментариев</span>
+            </td>
+        </tr>
+    </table>
+</section>
+
+
+<section class="appointment-container">
+    <h2>💳 Статус карты москвича</h2>
+    <p th:if="${cardStatus == '❌ Заявка отсутствует'}">❌ Карта москвича не оформлена</p>
+    <p th:if="${cardStatus != '❌ Заявка отсутствует'}">✅ Ваша карта: <span th:text="${cardStatus}"></span></p>
+    <p>Статус карты москвича: <span th:text="${cardStatus}">❌ Нет активных карт</span></p>
+
+</section>
+
+<form th:action="@{/logout}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button type="submit" class="nav-btn">🚪 Выйти</button>
+</form>
+
+</body>
+</html>

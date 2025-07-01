@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Проверка статуса карты | МФЦ</title>
+    <link rel="icon" href="/images/Emblem_of_the_Federal_Tax_Service.png" type="image/png">
+
+    <style>
+        :root {
+            --primary-color: #6c0f2c;
+            --primary-light: #8a1538;
+            --secondary-color: #0057b8;
+            --error-color: #d32f2f;
+            --success-color: #256029;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+            --card-bg: #ffffff;
+            --border-color: #ddd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Шапка сайта */
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo img {
+            height: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-left: auto;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Основной контент */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 20px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-description {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Форма */
+        .card-form {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 15, 44, 0.1);
+            outline: none;
+        }
+
+        .submit-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(108, 15, 44, 0.2);
+        }
+
+        /* Блок статуса */
+        .status-box {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-top: 2rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .status-box h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .status-box p {
+            margin: 0.5rem 0;
+        }
+
+        .status-box strong {
+            color: var(--primary-color);
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Стили для шапки */
+        .user-info-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.9rem;
+            min-width: 220px;
+        }
+
+        .user-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .user-icon, .request-icon, .no-request-icon {
+            font-size: 1rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .request-label {
+            opacity: 0.9;
+        }
+
+        .request-number {
+            font-weight: 500;
+            font-family: monospace;
+        }
+
+        .no-request-label {
+            opacity: 0.9;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 900px) {
+            .user-info-card {
+                min-width: auto;
+                padding: 8px 12px;
+            }
+
+            .user-info-item {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 1rem;
+            }
+
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+                order: 1;
+            }
+
+            .logo {
+                order: 0;
+            }
+
+            .nav-buttons {
+                order: 2;
+                margin-left: 0;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .user-info-container {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .user-info-card {
+                width: 100%;
+                text-align: center;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Шапка сайта (единая для всех страниц) -->
+<header class="header">
+    <div class="header-container">
+        <a href="http://localhost:8082" class="logo">
+            <img src="/images/Emblem_of_the_Federal_Tax_Service.png" alt="Логотип МФЦ">
+            <span class="logo-text">МФЦ Москвы</span>
+        </a>
+
+        <div class="header-content">
+            <div class="user-info-container">
+                <div class="user-info-card">
+                    <!-- Имя пользователя (всегда отображается) -->
+                    <div class="user-info-item">
+                        <span class="user-icon">👤</span>
+                        <span class="user-name" th:text="${username}">Имя пользователя</span>
+                    </div>
+
+                    <!-- Номер заявки (если есть) -->
+                    <div class="user-info-item" th:if="${requestNumber != null}">
+                        <span class="request-icon">💳</span>
+                        <span class="request-label">Заявка:</span>
+                        <span class="request-number" th:text="${requestNumber}">MC-123456</span>
+                    </div>
+
+                    <!-- Сообщение если заявки нет -->
+                    <div class="user-info-item" th:unless="${requestNumber != null}">
+                        <span class="no-request-icon">❌</span>
+                        <span class="no-request-label">Нет активных заявок</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="http://localhost:8082/user/dashboard" class="nav-btn">
+                <span>🏠</span>
+                <span>Главная</span>
+            </a>
+            <a href="http://localhost:8082/user/profile" class="nav-btn">
+                <span>👤</span>
+                <span>Профиль</span>
+            </a>
+            <form th:action="@{/logout}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="nav-btn">🚪 Выйти</button>
+            </form>
+
+        </div>
+    </div>
+</header>
+
+<!-- Основной контент -->
+<main class="container">
+    <div class="page-header">
+        <h1 class="page-title">Проверка статуса карты москвича</h1>
+        <p class="page-description">Введите номер заявки, чтобы узнать ее статус</p>
+    </div>
+
+    <form method="get" th:action="@{/moskvich_card/status}" class="card-form">
+        <div class="form-group">
+            <label>Введите номер заявки:</label>
+            <input type="text" name="requestNumber" class="input-field" required
+                   placeholder="Например: MC-123456">
+        </div>
+        <button type="submit" class="submit-btn">Проверить статус</button>
+    </form>
+
+    <!-- Блок с результатом проверки -->
+    <!-- Блок с результатом проверки -->
+    <div class="status-box" th:if="${cardStatus}">
+        <h3>Статус вашей карты москвича</h3>
+        <p><strong>Номер заявки:</strong> <span th:text="${request.requestNumber}"></span></p>
+        <p><strong>Обновленный статус:</strong> <span th:text="${cardStatus}"></span></p>
+    </div>
+
+</main>
+
+<script>
+    // Плавное появление формы
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.card-form');
+        if (form) {
+            form.style.opacity = 0;
+            form.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                form.style.opacity = 1;
+                form.style.transform = 'translateY(0)';
+            }, 150);
+        }
+    });
+</script>
+</body>
+</html>

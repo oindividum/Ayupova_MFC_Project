@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/css/js/animations.js"></script>
+    <link rel="icon" href="/images/Emblem_of_the_Federal_Tax_Service.png" type="image/png">
+
+
+</head>
+<body>
+<div class="container">
+    <h1>Регистрация</h1>
+    <form method="post" th:action="@{/auth/register}">
+        <label>Имя пользователя:</label>
+        <input type="text" name="username" class="input-field" required>
+
+        <label>Email:</label>
+        <input type="email" name="email" class="input-field" required>
+
+        <label>Пароль:</label>
+        <input type="password" name="password" class="input-field" required>
+
+        <label>Секретный код (только для сотрудников МФЦ):</label>
+        <input type="text" name="mfcCode" class="input-field">
+
+        <button type="submit" class="btn">Зарегистрироваться</button>
+    </form>
+
+
+
+    <p th:if="${error}" style="color: red;" th:text="${error}"></p>
+    <p>Уже есть аккаунт? <a href="/auth/login">Войти</a></p>
+</div>
+</body>
+</html>
